@@ -2,8 +2,7 @@
   <v-app>
     <v-app-bar color="white" elevation="2">
       <v-app-bar-title class="d-flex align-center">
-        <img src="/images/logo.png" alt="CIPREL" style="height:28px;" class="me-3" />
-        <div class="text-caption text-grey-darken-2">Tableau de bord des performances digitales</div>
+        <img :src="logoUrl" alt="CIPREL" style="height:57px;" class="m-0" />
       </v-app-bar-title>
       <v-spacer></v-spacer>
       
@@ -135,6 +134,12 @@
       </v-menu>
     </v-app-bar>
     
+    <!-- Arrière-plan avec blur et overlay -->
+    <div class="app-bg">
+      <div class="app-bg__image"></div>
+      <div class="app-bg__overlay"></div>
+    </div>
+
     <!-- Barre de chargement globale avec logo -->
     <v-progress-linear
       v-if="loading || loadingTraffic || loadingPages || loadingKeywords || loadingReferrals"
@@ -144,13 +149,13 @@
     >
       <template v-slot:default>
         <div class="d-flex align-center justify-center" style="gap:8px;">
-          <img src="/images/logo.png" alt="Chargement" style="height:18px;" />
+          <img :src="logoUrl" alt="Chargement" style="height:18px;" />
           <span class="text-caption">Chargement des données...</span>
         </div>
       </template>
     </v-progress-linear>
 
-    <v-main>
+    <v-main class="app-content">
       <v-container fluid class="pa-4">
         <v-row v-if="error" class="mb-4">
           <v-col cols="12">
@@ -598,9 +603,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, onMounted } from 'vue'
+import { useAnalytics } from '~/composables/useAnalytics'
 const { fetchAnalyticsData, getMetricsSummary, fetchTrafficSources, fetchTopPages, fetchTrafficGroups } = useAnalytics()
 
 const selectedPeriod = ref('30daysAgo')
+const logoUrl = 'https://ciprel.ci/wp-content/smush-webp/2024/04/images.png.webp'
 const analyticsData = ref<any[]>([])
 const summary = ref<any>(null)
 const trafficSources = ref<any[]>([])
@@ -1041,6 +1049,33 @@ onMounted(() => {
 /* App bar separation */
 .v-app-bar {
   border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Full-page background with blur and overlay */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.app-bg__image {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://ciprel.ci/wp-content/smush-webp/2023/05/Groupe-851.png.webp');
+  background-size: cover;
+  background-position: center;
+  filter: blur(2.5px);
+  transform: scale(1.02);
+}
+.app-bg__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.82));
+}
+
+/* Ensure content sits above background */
+.app-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* Gradients personnalisés CIPREL */

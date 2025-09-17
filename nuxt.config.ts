@@ -4,6 +4,10 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify']
   },
+  nitro: {
+    // Optimize build output for Vercel serverless platform
+    preset: 'vercel'
+  },
   runtimeConfig: {
     googleClientEmail: process.env.GOOGLE_CLIENT_EMAIL,
     googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
